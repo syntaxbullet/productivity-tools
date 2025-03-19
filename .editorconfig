@@ -1,0 +1,56 @@
+# EditorConfig configuration for a React Vite project
+# Learn more at https://editorconfig.org
+
+# This is the root editorconfig file; all other EditorConfig files below are ignored.
+root = true
+
+# Global settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# JavaScript, JSX, TypeScript, and TSX files
+[*.{js,jsx,ts,tsx}]
+# Explicitly define indent size for clarity even though it matches the global setting.
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_size = 2
+# Trailing whitespace is usually not an issue in JSON, but can be enforced if desired.
+trim_trailing_whitespace = true
+
+# CSS files
+[*.css]
+indent_size = 2
+
+# SASS/SCSS files
+[*.{scss,sass}]
+indent_size = 2
+
+# HTML files
+[*.html]
+indent_size = 2
+
+# Markdown files
+[*.md]
+# Disable max line length enforcement—Markdown often benefits from manual line breaks.
+max_line_length = off
+# Preserve trailing spaces that are sometimes used for formatting in Markdown.
+trim_trailing_whitespace = false
+
+# YAML files (e.g., for configuration)
+[*.yml]
+indent_size = 2
+# Trailing whitespace can be significant in YAML; disable trimming.
+trim_trailing_whitespace = false
+
+# Environment files (.env)
+[*.env]
+# These files often require no specific indentation and may have spaces that shouldn’t be trimmed.
+indent_style = unset
+trim_trailing_whitespace = false
