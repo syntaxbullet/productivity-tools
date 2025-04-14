@@ -5,7 +5,7 @@ import 'react-resizable/css/styles.css';
 
 import { useWidgetStore } from '@/stores/WidgetStore';
 import { CustomResizeHandle } from './CustomResizeHandle';
-import { useWidgetRegistration } from './useWidgetRegistration';
+import { useWidgetRegistration } from '../../hooks/useWidgetRegistration';
 import type { Widget } from '@/stores/WidgetStore';
 
 interface WidgetProps {
