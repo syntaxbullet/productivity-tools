@@ -2,6 +2,7 @@ import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useWidgetStore } from '@/stores/WidgetStore';
 import { GenericWidget } from '@/components/widgets/GenericWidget';
+import { ClockWidget } from '@/components/widgets/ClockWidget';
 
 export default function Home() {
   const updateWidget = useWidgetStore((state) => state.updateWidget);
@@ -33,6 +34,14 @@ export default function Home() {
           This is a widget with some longer content.
         </div>
       </GenericWidget>
+      <ClockWidget
+        id="clock"
+        type="clock"
+        minWidth={160}
+        minHeight={60}
+        maxHeight={500}
+        maxWidth={800}
+      />
     </DndContext>
   );
 }

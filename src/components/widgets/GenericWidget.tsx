@@ -4,7 +4,7 @@ import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 
 import { useWidgetStore } from '@/stores/WidgetStore';
-import { CustomResizeHandle } from './CustomResizeHandle';
+import { CustomResizeHandle } from '../CustomResizeHandle';
 import { useWidgetRegistration } from '../../hooks/useWidgetRegistration';
 import type { Widget } from '@/stores/WidgetStore';
 import { Button } from '../ui/button';
@@ -19,6 +19,7 @@ interface WidgetProps {
   minHeight?: number;
   maxWidth?: number;
   maxHeight?: number;
+  onHoverChange?: (isHovered: boolean) => void;
 }
 
 export function GenericWidget({
@@ -30,6 +31,7 @@ export function GenericWidget({
   minHeight,
   maxWidth,
   maxHeight,
+  onHoverChange,
 }: WidgetProps) {
   const { attributes, listeners, setNodeRef, transform, node } = useDraggable({
     id,
@@ -57,6 +59,17 @@ export function GenericWidget({
     maxWidth,
     maxHeight,
   });
+
+  // Notify parent of hover state change
+  const handlePointerOver = () => {
+    setIsHovered(true);
+    if (onHoverChange) onHoverChange(true);
+  };
+
+  const handlePointerLeave = () => {
+    setIsHovered(false);
+    if (onHoverChange) onHoverChange(false);
+  };
 
   // Compute the widget's absolute position and size, including drag transform
   const style = useMemo(
@@ -88,8 +101,8 @@ export function GenericWidget({
       tabIndex={0}
       role="region"
       aria-label={`Widget ${id}`}
-      onPointerOver={() => setIsHovered(true)}
-      onPointerLeave={() => setIsHovered(false)}
+      onPointerOver={handlePointerOver}
+      onPointerLeave={handlePointerLeave}
     >
       {widget ? (
         <>
