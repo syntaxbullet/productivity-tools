@@ -118,3 +118,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+.widget {
+  container-type: size;
+}
+
+.custom-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+  background: transparent;
+}
