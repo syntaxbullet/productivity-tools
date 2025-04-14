@@ -1,13 +1,13 @@
-import { useDraggable } from '@dnd-kit/core';
-import { useMemo, useRef, CSSProperties, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 
 import { useWidgetStore } from '@/stores/WidgetStore';
 import { CustomResizeHandle } from '../CustomResizeHandle';
-import { useWidgetRegistration } from '../../hooks/useWidgetRegistration';
+import { useWidgetRegistration } from '@/hooks/useWidgetRegistration';
+import { useWidgetDrag } from '@/hooks/useWidgetDrag';
 import type { Widget } from '@/stores/WidgetStore';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { Pin, PinOff, X } from 'lucide-react';
 
 interface WidgetProps {
@@ -20,6 +20,8 @@ interface WidgetProps {
   maxWidth?: number;
   maxHeight?: number;
   onHoverChange?: (isHovered: boolean) => void;
+  customActionButtons?: React.ReactNode;
+  customButtonsPosition?: 'above' | 'below';
 }
 
 export function GenericWidget({
@@ -32,18 +34,24 @@ export function GenericWidget({
   maxWidth,
   maxHeight,
   onHoverChange,
+  customActionButtons,
+  customButtonsPosition,
 }: WidgetProps) {
-  const { attributes, listeners, setNodeRef, transform, node } = useDraggable({
-    id,
-  });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    node,
+    didRegister,
+    translateX,
+    translateY,
+  } = useWidgetDrag(id);
+
   const { addWidget } = useWidgetStore();
-  const didRegister = useRef(false);
   const widget: Widget | undefined = useWidgetStore((s) => s.widgets[id]);
   const updateWidgetData = useWidgetStore((s) => s.updateWidgetData);
   const updateWidget = useWidgetStore((s) => s.updateWidget);
   const removeWidget = useWidgetStore((s) => s.removeWidget);
-  const translateX = widget && widget.data.isPinned ? 0 : (transform?.x ?? 0);
-  const translateY = widget && widget.data.isPinned ? 0 : (transform?.y ?? 0);
   const [isHovered, setIsHovered] = useState(false);
 
   // Register the widget in the global store if it doesn't exist yet
@@ -74,14 +82,16 @@ export function GenericWidget({
 
   // Compute the widget's absolute position and size, including drag transform
   const style = useMemo(
-    (): CSSProperties => ({
-      transform: `translate(${translateX}px, ${translateY}px)`,
+    () => ({
+      transform: widget?.data.isPinned
+        ? 'none'
+        : `translate(${translateX}px, ${translateY}px)`,
       left: widget?.position?.x ?? 0,
       top: widget?.position?.y ?? 0,
       width: widget?.size?.width,
       height: widget?.size?.height,
       touchAction: 'auto',
-      position: 'absolute',
+      position: 'absolute' as 'absolute',
     }),
     [translateX, translateY, widget]
   );
@@ -98,7 +108,11 @@ export function GenericWidget({
       {...listeners}
       {...attributes}
       style={style}
-      className={`w-fit h-fit bg-background border-2 ${widget?.data.isPinned ? 'border-solid cursor-auto' : 'border-dashed cursor-grab'} rounded widget`}
+      className={`w-fit h-fit bg-background border-2 ${
+        widget?.data.isPinned
+          ? 'border-solid cursor-auto'
+          : 'border-dashed cursor-grab'
+      } rounded widget`}
       tabIndex={0}
       role="region"
       aria-label={`Widget ${id}`}
@@ -109,26 +123,39 @@ export function GenericWidget({
         <>
           {isHovered && (
             <div
-              className={`widget-controls absolute ${widget?.position.y > 80 ? 'top-[-72px]' : 'bottom-[-72px]'} py-6 w-full flex justify-between`}
+              className={`widget-controls absolute ${
+                customButtonsPosition
+                  ? customButtonsPosition === 'above'
+                    ? 'top-[-72px]'
+                    : 'bottom-[-72px]'
+                  : widget?.position.y > 80
+                    ? 'top-[-72px]'
+                    : 'bottom-[-72px]'
+              } py-6 w-full flex justify-between items-center gap-2`}
             >
-              <Button
-                variant={'outline'}
-                size={'icon'}
-                onPointerDown={(e) => e.stopPropagation()}
-                onClick={() => handleWidgetRemove()}
-              >
-                <X />
-              </Button>
-              <Button
-                variant={'outline'}
-                size={'icon'}
-                onClick={() => {
-                  updateWidgetData(id, { isPinned: !widget.data.isPinned });
-                }}
-                onPointerDown={(e) => e.stopPropagation()}
-              >
-                {widget.data.isPinned ? <PinOff /> : <Pin />}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={'outline'}
+                  size={'icon'}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={() => handleWidgetRemove()}
+                >
+                  <X />
+                </Button>
+                <Button
+                  variant={'outline'}
+                  size={'icon'}
+                  onClick={() => {
+                    updateWidgetData(id, { isPinned: !widget.data.isPinned });
+                  }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
+                  {widget.data.isPinned ? <PinOff /> : <Pin />}
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                {customActionButtons}
+              </div>
             </div>
           )}
           <ResizableBox

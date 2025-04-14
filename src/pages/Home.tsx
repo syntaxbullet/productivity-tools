@@ -1,8 +1,8 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useWidgetStore } from '@/stores/WidgetStore';
-import { ClockWidget } from '@/components/widgets/ClockWidget';
-import { PomodoroWidget } from '@/components/widgets/PomodoroWidget';
+import { ClockWidget } from '@/components/widgets/clock/ClockWidget';
+import { PomodoroWidget } from '@/components/widgets/pomodoro/PomodoroWidget';
 
 export default function Home() {
   const updateWidget = useWidgetStore((state) => state.updateWidget);
