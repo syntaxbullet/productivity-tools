@@ -73,7 +73,7 @@ export function ClockWidget({
         className={`flex justify-end p-2 ${widget?.position.y > 80 ? 'top-[-56px]' : 'bottom-[-52px]'} left-[40px] absolute ${isHovered ? 'opacity-100 pointer-events-auto' : 'opacity-0'}`}
       >
         <Popover>
-          <PopoverTrigger>
+          <PopoverTrigger asChild>
             <Button
               size="icon"
               variant="outline"

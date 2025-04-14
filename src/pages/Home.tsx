@@ -1,7 +1,6 @@
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useWidgetStore } from '@/stores/WidgetStore';
-import { GenericWidget } from '@/components/widgets/GenericWidget';
 import { ClockWidget } from '@/components/widgets/ClockWidget';
 
 export default function Home() {
@@ -22,18 +21,6 @@ export default function Home() {
 
   return (
     <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToWindowEdges]}>
-      <GenericWidget
-        id="debug"
-        type="debug"
-        minWidth={200}
-        minHeight={200}
-        maxHeight={800}
-        maxWidth={800}
-      >
-        <div className="debug widget-inner">
-          This is a widget with some longer content.
-        </div>
-      </GenericWidget>
       <ClockWidget
         id="clock"
         type="clock"
