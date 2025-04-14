@@ -139,13 +139,3 @@ export const useThemeStore = create<ThemeStore>()(
     }
   )
 );
-
-// Initialize localStorage with default values if not present
-const initializeThemeStorage = () => {
-  // Removed old initialization code
-};
-
-// Call the initialization function
-// Removed old initialization call
-
-// Removed old duplicate useThemeStore declaration

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useThemeStore } from '../stores/themeStore';
 import { ThemeDialog } from './ThemeDialog';
 import { Palette } from 'lucide-react';
