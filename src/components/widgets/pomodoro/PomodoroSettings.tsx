@@ -1,5 +1,5 @@
-import { WidgetSettingsPopover } from '../WidgetSettingsPopover';
-import { WidgetSettingsContent } from '../WidgetSettingsContent';
+import { WidgetSettingsPopover } from '../../WidgetSettingsPopover';
+import { WidgetSettingsContent } from '../../WidgetSettingsContent';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 

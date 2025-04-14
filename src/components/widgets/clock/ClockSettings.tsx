@@ -1,6 +1,6 @@
 import { Switch } from '@/components/ui/switch';
-import { WidgetSettingsPopover } from '../WidgetSettingsPopover';
-import { WidgetSettingsContent } from '../WidgetSettingsContent';
+import { WidgetSettingsPopover } from '../../WidgetSettingsPopover';
+import { WidgetSettingsContent } from '../../WidgetSettingsContent';
 
 interface ClockSettingsProps {
   isAnalog: boolean;
