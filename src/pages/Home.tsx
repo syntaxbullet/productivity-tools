@@ -2,6 +2,7 @@ import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useWidgetStore } from '@/stores/WidgetStore';
 import { ClockWidget } from '@/components/widgets/ClockWidget';
+import { PomodoroWidget } from '@/components/widgets/PomodoroWidget';
 
 export default function Home() {
   const updateWidget = useWidgetStore((state) => state.updateWidget);
@@ -26,6 +27,14 @@ export default function Home() {
         type="clock"
         minWidth={160}
         minHeight={60}
+        maxHeight={500}
+        maxWidth={800}
+      />
+      <PomodoroWidget
+        id="pomodoro"
+        type="pomodoro"
+        minWidth={250}
+        minHeight={280}
         maxHeight={500}
         maxWidth={800}
       />
