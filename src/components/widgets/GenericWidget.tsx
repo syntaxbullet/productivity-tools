@@ -39,6 +39,7 @@ export function GenericWidget({
   const { addWidget } = useWidgetStore();
   const didRegister = useRef(false);
   const widget: Widget | undefined = useWidgetStore((s) => s.widgets[id]);
+  const updateWidgetData = useWidgetStore((s) => s.updateWidgetData);
   const updateWidget = useWidgetStore((s) => s.updateWidget);
   const removeWidget = useWidgetStore((s) => s.removeWidget);
   const translateX = widget && widget.data.isPinned ? 0 : (transform?.x ?? 0);
@@ -122,10 +123,7 @@ export function GenericWidget({
                 variant={'outline'}
                 size={'icon'}
                 onClick={() => {
-                  updateWidget(id, {
-                    data: { isPinned: !widget.data.isPinned },
-                  });
-                  console.log('clicked');
+                  updateWidgetData(id, { isPinned: !widget.data.isPinned });
                 }}
                 onPointerDown={(e) => e.stopPropagation()}
               >
