@@ -28,7 +28,7 @@ export function WidgetSettingsPopover({
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className={`p-3 space-y-4 rounded-md shadow-md bg-white ${popoverContentClassName ?? 'w-64'}`}
+        className={`p-3 space-y-4 rounded-md shadow-md bg-popover text-popover-foreground ${popoverContentClassName ?? 'w-64'}`}
         onPointerDown={(e) => e.stopPropagation()}
       >
         {children}
