@@ -136,7 +136,7 @@ export function GenericWidget({
                 ? [maxWidth, maxHeight]
                 : undefined
             }
-            handle={widget.data.isPinned ? <></> : <CustomResizeHandle />}
+            handle={widget.data.isPinned ? <div></div> : <CustomResizeHandle />}
             onResize={(_e, data) => {
               updateWidget(id, { size: data.size });
             }}
