@@ -1,5 +1,5 @@
 import { useDraggable } from '@dnd-kit/core';
-import { useMemo, useRef, CSSProperties } from 'react';
+import { useMemo, useRef, CSSProperties, useState } from 'react';
 import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 
@@ -7,6 +7,8 @@ import { useWidgetStore } from '@/stores/WidgetStore';
 import { CustomResizeHandle } from './CustomResizeHandle';
 import { useWidgetRegistration } from '../../hooks/useWidgetRegistration';
 import type { Widget } from '@/stores/WidgetStore';
+import { Button } from '../ui/button';
+import { Pin, PinOff, X } from 'lucide-react';
 
 interface WidgetProps {
   children: React.ReactNode;
@@ -36,8 +38,10 @@ export function GenericWidget({
   const didRegister = useRef(false);
   const widget: Widget | undefined = useWidgetStore((s) => s.widgets[id]);
   const updateWidget = useWidgetStore((s) => s.updateWidget);
-  const translateX = transform?.x ?? 0;
-  const translateY = transform?.y ?? 0;
+  const removeWidget = useWidgetStore((s) => s.removeWidget);
+  const translateX = widget && widget.data.isPinned ? 0 : (transform?.x ?? 0);
+  const translateY = widget && widget.data.isPinned ? 0 : (transform?.y ?? 0);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Register the widget in the global store if it doesn't exist yet
   useWidgetRegistration({
@@ -63,11 +67,16 @@ export function GenericWidget({
       width: widget?.size?.width,
       height: widget?.size?.height,
       touchAction: 'auto',
-      cursor: 'grab',
       position: 'absolute',
     }),
     [translateX, translateY, widget]
   );
+
+  const handleWidgetRemove = () => {
+    removeWidget(id);
+    didRegister.current = true; // prevent instant re-registration before removing it from the DOM.
+    node.current?.remove();
+  };
 
   return (
     <div
@@ -75,33 +84,66 @@ export function GenericWidget({
       {...listeners}
       {...attributes}
       style={style}
-      className="w-fit h-fit bg-background border-2 rounded widget"
+      className={`w-fit h-fit bg-background border-2 ${widget?.data.isPinned ? 'border-solid cursor-auto' : 'border-dashed cursor-grab'} rounded widget`}
       tabIndex={0}
       role="region"
       aria-label={`Widget ${id}`}
+      onPointerOver={() => setIsHovered(true)}
+      onPointerLeave={() => setIsHovered(false)}
     >
       {widget ? (
-        <ResizableBox
-          width={widget.size.width}
-          height={widget.size.height}
-          minConstraints={[
-            typeof minWidth === 'number' ? minWidth : widget.initialSize.width,
-            typeof minHeight === 'number'
-              ? minHeight
-              : widget.initialSize.height,
-          ]}
-          maxConstraints={
-            typeof maxWidth === 'number' && typeof maxHeight === 'number'
-              ? [maxWidth, maxHeight]
-              : undefined
-          }
-          handle={<CustomResizeHandle />}
-          onResize={(_e, data) => {
-            updateWidget(id, { size: data.size });
-          }}
-        >
-          {children}
-        </ResizableBox>
+        <>
+          {isHovered && (
+            <div
+              className={`widget-controls absolute ${widget?.position.y > 80 ? 'top-[-72px]' : 'bottom-[-72px]'} py-6 w-full flex justify-between`}
+            >
+              <Button
+                variant={'outline'}
+                size={'icon'}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={() => handleWidgetRemove()}
+              >
+                <X />
+              </Button>
+              <Button
+                variant={'outline'}
+                size={'icon'}
+                onClick={() => {
+                  updateWidget(id, {
+                    data: { isPinned: !widget.data.isPinned },
+                  });
+                  console.log('clicked');
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                {widget.data.isPinned ? <PinOff /> : <Pin />}
+              </Button>
+            </div>
+          )}
+          <ResizableBox
+            width={widget.size.width}
+            height={widget.size.height}
+            minConstraints={[
+              typeof minWidth === 'number'
+                ? minWidth
+                : widget.initialSize.width,
+              typeof minHeight === 'number'
+                ? minHeight
+                : widget.initialSize.height,
+            ]}
+            maxConstraints={
+              typeof maxWidth === 'number' && typeof maxHeight === 'number'
+                ? [maxWidth, maxHeight]
+                : undefined
+            }
+            handle={widget.data.isPinned ? <></> : <CustomResizeHandle />}
+            onResize={(_e, data) => {
+              updateWidget(id, { size: data.size });
+            }}
+          >
+            {children}
+          </ResizableBox>
+        </>
       ) : (
         children
       )}

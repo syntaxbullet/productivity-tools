@@ -10,7 +10,7 @@ export default function Home() {
     const { active, delta } = event;
     const id = active.id as string;
     const widget = useWidgetStore.getState().widgets[id];
-    if (widget) {
+    if (widget && !widget.data.isPinned) {
       const newPos = {
         x: widget.position.x + delta.x,
         y: widget.position.y + delta.y,
@@ -24,12 +24,14 @@ export default function Home() {
       <GenericWidget
         id="debug"
         type="debug"
-        minWidth={500}
+        minWidth={200}
         minHeight={200}
         maxHeight={800}
         maxWidth={800}
       >
-        <div className="debug">This is a widget with some longer content.</div>
+        <div className="debug widget-inner">
+          This is a widget with some longer content.
+        </div>
       </GenericWidget>
     </DndContext>
   );

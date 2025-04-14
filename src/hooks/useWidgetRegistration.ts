@@ -47,7 +47,10 @@ export function useWidgetRegistration({
       addWidget({
         id,
         type: type,
-        position: { x: 0, y: 0 },
+        position: {
+          x: window.innerWidth / 2 - width / 2,
+          y: window.innerHeight / 2 - height / 2,
+        },
         size: {
           width,
           height,
