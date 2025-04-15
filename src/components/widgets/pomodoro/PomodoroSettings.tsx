@@ -37,7 +37,7 @@ export function PomodoroSettings({
       <WidgetSettingsContent>
         <div className="flex flex-col space-y-1">
           <label htmlFor="pomodoroDuration" className="font-semibold leading-6">
-            Pomodoro Duration (minutes)
+            Focus Duration (minutes)
           </label>
           <Input
             id="pomodoroDuration"

@@ -98,7 +98,7 @@ export function PomodoroWidget({
     if (state.isRunning) {
       document.title = `Pomodoro - ${formattedTime}`;
     } else {
-      document.title = 'Pomodoro';
+      document.title = 'Syntaxbullet Productivity Tools';
     }
   }, [state.isRunning, formattedTime]);
 

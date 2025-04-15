@@ -1,8 +1,9 @@
 import React from 'react';
 import { ClockWidget } from '@/components/widgets/clock/ClockWidget';
 import { PomodoroWidget } from '@/components/widgets/pomodoro/PomodoroWidget';
+import YouTubePlayerWidget from '@/components/widgets/youtube/YouTubePlayerWidget';
 
-export type WidgetType = 'clock' | 'pomodoro';
+export type WidgetType = 'clock' | 'pomodoro' | 'youtube';
 
 export interface WidgetDefaults {
   type: WidgetType;
@@ -34,6 +35,16 @@ const widgetRegistry: Record<WidgetType, WidgetDefaults> = {
       minHeight: 280,
       maxWidth: 800,
       maxHeight: 500,
+    },
+  },
+  youtube: {
+    type: 'youtube',
+    component: YouTubePlayerWidget,
+    defaultProps: {
+      minWidth: 480,
+      minHeight: 320,
+      maxWidth: 1440,
+      maxHeight: 810,
     },
   },
 };

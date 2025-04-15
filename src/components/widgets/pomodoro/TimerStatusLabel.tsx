@@ -5,7 +5,7 @@ interface TimerStatusLabelProps {
 export function TimerStatusLabel({ currentMode }: TimerStatusLabelProps) {
   const label =
     currentMode === 'pomodoro'
-      ? 'Pomodoro'
+      ? 'Focus'
       : currentMode === 'shortBreak'
         ? 'Short Break'
         : 'Long Break';
