@@ -7,6 +7,7 @@ import { TimerModeButtons } from './TimerModeButtons';
 import { TimerDisplay } from './TimerDisplay';
 import { TimerStatusLabel } from './TimerStatusLabel';
 import { TimerControls } from './TimerControls';
+import { VisualTimerDisplay } from './VisualTimerDisplay';
 
 const chimeSoundUrl =
   'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg';
@@ -43,6 +44,8 @@ export function PomodoroWidget({
       soundEnabled: widget?.data?.soundEnabled || false,
       notificationsEnabled: widget?.data?.notificationsEnabled || false,
       adhdMode: false,
+      invertedDisplay: widget?.data?.invertedDisplay || false,
+      displayType: widget?.data?.displayType || 'text',
     }),
     [widget?.data]
   );
@@ -66,11 +69,24 @@ export function PomodoroWidget({
   const { state, start, pause, reset, setMode, setSettings, audioRef } =
     usePomodoroTimer(initialState, onStateChange);
 
-  // Format secondsLeft as mm:ss
-  const minutes = Math.floor(state.secondsLeft / 60)
+  // Calculate displayed time based on invertedDisplay flag
+  let displaySeconds = state.secondsLeft;
+  if (state.invertedDisplay) {
+    // Calculate elapsed time counting up
+    const totalDuration =
+      state.mode === 'pomodoro'
+        ? state.pomodoroDuration
+        : state.mode === 'shortBreak'
+          ? state.shortBreakDuration
+          : state.longBreakDuration;
+    displaySeconds = totalDuration - state.secondsLeft;
+  }
+
+  // Format displaySeconds as mm:ss
+  const minutes = Math.floor(displaySeconds / 60)
     .toString()
     .padStart(2, '0');
-  const seconds = (state.secondsLeft % 60).toString().padStart(2, '0');
+  const seconds = (displaySeconds % 60).toString().padStart(2, '0');
   const formattedTime = `${minutes}:${seconds}`;
 
   // Update document title with remaining time when timer is running
@@ -86,6 +102,13 @@ export function PomodoroWidget({
   const height = widget?.size?.height ?? 200; // fallback height
   const smallerDimension = Math.min(width, height);
   const fontSizePx = Math.min(Math.max(smallerDimension * 0.25, 16), 128);
+
+  const totalDuration =
+    state.mode === 'pomodoro'
+      ? state.pomodoroDuration
+      : state.mode === 'shortBreak'
+        ? state.shortBreakDuration
+        : state.longBreakDuration;
 
   return (
     <GenericWidget
@@ -110,7 +133,16 @@ export function PomodoroWidget({
         }}
       >
         <TimerModeButtons currentMode={state.mode} setMode={setMode} />
-        <TimerDisplay formattedTime={formattedTime} fontSizePx={fontSizePx} />
+        {state.displayType === 'visual' ? (
+          <VisualTimerDisplay
+            secondsLeft={state.secondsLeft}
+            totalSeconds={totalDuration}
+            fontSizePx={fontSizePx}
+            inverted={state.invertedDisplay}
+          />
+        ) : (
+          <TimerDisplay formattedTime={formattedTime} fontSizePx={fontSizePx} />
+        )}
         <TimerStatusLabel currentMode={state.mode} />
         <TimerControls
           isRunning={state.isRunning}

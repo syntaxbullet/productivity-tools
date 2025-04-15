@@ -2,6 +2,13 @@ import { WidgetSettingsPopover } from '../../WidgetSettingsPopover';
 import { WidgetSettingsContent } from '../../WidgetSettingsContent';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface PomodoroSettingsProps {
   state: {
@@ -11,6 +18,8 @@ interface PomodoroSettingsProps {
     autoStartNext: boolean;
     soundEnabled: boolean;
     notificationsEnabled: boolean;
+    invertedDisplay?: boolean;
+    displayType?: 'text' | 'visual';
   };
   setSettings: (
     settings: Partial<{
@@ -20,6 +29,8 @@ interface PomodoroSettingsProps {
       autoStartNext: boolean;
       soundEnabled: boolean;
       notificationsEnabled: boolean;
+      invertedDisplay?: boolean;
+      displayType?: 'text' | 'visual';
     }>
   ) => void;
 }
@@ -133,6 +144,36 @@ export function PomodoroSettings({
               Enable notifications
             </label>
           </div>
+        </div>
+        <div className="flex items-center space-x-2 mt-4">
+          <Switch
+            id="invertedDisplay"
+            checked={state.invertedDisplay || false}
+            onCheckedChange={(checked) =>
+              setSettings({ invertedDisplay: checked })
+            }
+            onPointerDown={(e) => e.stopPropagation()}
+          />
+          <label htmlFor="invertedDisplay" className="font-semibold leading-6">
+            Inverted Timer Display (Count Up)
+          </label>
+        </div>
+        <div className="flex flex-col space-y-1 mt-4">
+          <label htmlFor="displayType" className="font-semibold leading-6">
+            Timer Display Type
+          </label>
+          <select
+            id="displayType"
+            className="block w-full rounded-md border border-input bg-card px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            value={state.displayType || 'text'}
+            onChange={(e) =>
+              setSettings({ displayType: e.target.value as 'text' | 'visual' })
+            }
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <option value="text">Text</option>
+            <option value="visual">Visual</option>
+          </select>
         </div>
       </WidgetSettingsContent>
     </WidgetSettingsPopover>

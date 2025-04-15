@@ -9,13 +9,14 @@ interface PomodoroSettings {
   autoStartNext: boolean;
   soundEnabled: boolean;
   notificationsEnabled: boolean;
-  adhdMode: boolean;
+  displayType?: 'text' | 'visual';
 }
 
 interface PomodoroState extends PomodoroSettings {
   mode: TimerMode;
   secondsLeft: number;
   isRunning: boolean;
+  invertedDisplay?: boolean;
 }
 
 type Action =
