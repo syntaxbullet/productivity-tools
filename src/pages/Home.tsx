@@ -1,8 +1,7 @@
 import { DndContext, DragEndEvent, Modifier } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useWidgetStore } from '@/stores/WidgetStore';
-import { ClockWidget } from '@/components/widgets/clock/ClockWidget';
-import { PomodoroWidget } from '@/components/widgets/pomodoro/PomodoroWidget';
+import { getWidgetComponent, getWidgetDefaults } from '@/lib/WidgetRegistry';
 
 const NAV_BAR_HEIGHT = 70; // Navigation bar height plus vertical padding
 
@@ -28,6 +27,7 @@ const restrictToBelowNavBar: Modifier = ({ transform, active }) => {
 };
 
 export default function Home() {
+  const widgets = useWidgetStore((state) => state.widgets);
   const updateWidget = useWidgetStore((state) => state.updateWidget);
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -39,31 +39,37 @@ export default function Home() {
         x: widget.position.x + delta.x,
         y: widget.position.y + delta.y,
       };
-      updateWidget(id, { position: { x: newPos.x, y: newPos.y } });
+      updateWidget(id, { position: newPos });
     }
   };
 
   return (
-    <DndContext
-      onDragEnd={handleDragEnd}
-      modifiers={[restrictToWindowEdges, restrictToBelowNavBar]}
-    >
-      <ClockWidget
-        id="clock"
-        type="clock"
-        minWidth={160}
-        minHeight={60}
-        maxHeight={500}
-        maxWidth={800}
-      />
-      <PomodoroWidget
-        id="pomodoro"
-        type="pomodoro"
-        minWidth={250}
-        minHeight={280}
-        maxHeight={500}
-        maxWidth={800}
-      />
-    </DndContext>
+    <>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToWindowEdges, restrictToBelowNavBar]}
+      >
+        {Object.values(widgets).map((widget) => {
+          const WidgetComponent = getWidgetComponent(widget.type);
+          if (!WidgetComponent) return null;
+          const defaults = getWidgetDefaults(widget.type);
+          return (
+            <WidgetComponent
+              key={widget.id}
+              id={widget.id}
+              type={widget.type}
+              minWidth={defaults?.minWidth}
+              minHeight={defaults?.minHeight}
+              maxWidth={defaults?.maxWidth}
+              maxHeight={defaults?.maxHeight}
+              onDragStart={() => {
+                // Optional: handle drag start globally if needed
+              }}
+              onDragEnd={handleDragEnd}
+            />
+          );
+        })}
+      </DndContext>
+    </>
   );
 }

@@ -4,9 +4,11 @@ import { devtools, persist } from 'zustand/middleware';
 type Position = { x: number; y: number };
 type Size = { width: number; height: number };
 
+import { WidgetType, getWidgetDefaults } from '@/lib/WidgetRegistry';
+
 export type Widget = {
   id: string;
-  type: string;
+  type: WidgetType;
   position: Position;
   initialSize: Size;
   size: Size;
@@ -20,6 +22,7 @@ type WidgetStore = {
   widgets: { [id: string]: Widget };
 
   addWidget: (widget: Widget) => void;
+  spawnWidget: (type: WidgetType) => void;
   removeWidget: (id: string) => void;
   updateWidget: (id: string, update: Partial<Widget>) => void;
   updateWidgetData: (id: string, data: any) => void;
@@ -28,7 +31,7 @@ type WidgetStore = {
 export const useWidgetStore = create<WidgetStore>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         widgets: {},
 
         addWidget: (widget) =>
@@ -70,6 +73,35 @@ export const useWidgetStore = create<WidgetStore>()(
               },
             };
           }),
+
+        spawnWidget: (type: WidgetType) => {
+          const id = crypto.randomUUID();
+          const widgetDefaults = getWidgetDefaults(type);
+          if (!widgetDefaults) return;
+          const widgetsArray = Object.values(get().widgets);
+          const maxZIndex =
+            widgetsArray.length > 0
+              ? Math.max(...widgetsArray.map((w) => w.zIndex))
+              : 0;
+          const newWidget: Widget = {
+            id,
+            type,
+            position: { x: 100, y: 70 + 20 },
+            initialSize: {
+              width: widgetDefaults.minWidth,
+              height: widgetDefaults.minHeight,
+            },
+            size: {
+              width: widgetDefaults.minWidth,
+              height: widgetDefaults.minHeight,
+            },
+            data: {},
+            zIndex: maxZIndex + 1,
+          };
+          set((state) => ({
+            widgets: { ...state.widgets, [id]: newWidget },
+          }));
+        },
       }),
       {
         name: 'widget-store',

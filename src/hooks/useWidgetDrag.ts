@@ -10,7 +10,7 @@ export function useWidgetDrag(
     id,
     onDragStart,
     onDragEnd,
-  });
+  } as any);
 
   const didRegister = useRef(false);
 

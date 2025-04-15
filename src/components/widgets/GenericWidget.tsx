@@ -36,7 +36,9 @@ export function GenericWidget({
   onHoverChange,
   customActionButtons,
   customButtonsPosition,
-}: WidgetProps) {
+  onDragStart,
+  onDragEnd,
+}: WidgetProps & { onDragStart?: () => void; onDragEnd?: () => void }) {
   const {
     attributes,
     listeners,
@@ -46,7 +48,7 @@ export function GenericWidget({
     didRegister,
     translateX,
     translateY,
-  } = useWidgetDrag(id);
+  } = useWidgetDrag(id, onDragStart, onDragEnd);
 
   const widgets = useWidgetStore((state) => state.widgets);
   const updateWidgetStore = useWidgetStore((state) => state.updateWidget);
@@ -106,9 +108,10 @@ export function GenericWidget({
   // Compute the widget's absolute position and size, including drag transform
   const style = useMemo(
     () => ({
-      transform: widget?.data.isPinned
-        ? 'none'
-        : `translate(${translateX}px, ${translateY}px)`,
+      transform:
+        widget?.data.isPinned || !isDragging
+          ? 'none'
+          : `translate(${translateX}px, ${translateY}px)`,
       left: widget?.position?.x ?? 0,
       top: widget?.position?.y ?? 0,
       width: widget?.size?.width,
@@ -117,13 +120,12 @@ export function GenericWidget({
       position: 'absolute' as 'absolute',
       zIndex: widget?.zIndex ?? 'auto',
     }),
-    [translateX, translateY, widget, transform]
+    [translateX, translateY, widget, transform, isDragging]
   );
 
   const handleWidgetRemove = () => {
     removeWidget(id);
     didRegister.current = true; // prevent instant re-registration before removing it from the DOM.
-    node.current?.remove();
   };
 
   return (

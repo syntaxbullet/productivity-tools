@@ -52,7 +52,11 @@ export function PomodoroWidget({
 
   // Callback to sync state changes to the store with shallow comparison
   const onStateChange = (state: any) => {
-    const currentData = widget?.data || {};
+    if (!widget) {
+      // Widget no longer exists, skip updating
+      return;
+    }
+    const currentData = widget.data || {};
     const keys = Object.keys(state);
     let hasChanges = false;
     for (const key of keys) {
