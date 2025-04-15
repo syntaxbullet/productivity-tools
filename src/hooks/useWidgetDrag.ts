@@ -1,9 +1,15 @@
 import { useDraggable } from '@dnd-kit/core';
 import { useRef } from 'react';
 
-export function useWidgetDrag(id: string) {
+export function useWidgetDrag(
+  id: string,
+  onDragStart?: () => void,
+  onDragEnd?: () => void
+) {
   const { attributes, listeners, setNodeRef, transform, node } = useDraggable({
     id,
+    onDragStart,
+    onDragEnd,
   });
 
   const didRegister = useRef(false);

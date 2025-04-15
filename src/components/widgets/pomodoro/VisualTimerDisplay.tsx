@@ -49,7 +49,7 @@ export const VisualTimerDisplay: React.FC<VisualTimerDisplayProps> = ({
         r={radius * 0.8}
         fill="none"
         className="stroke-muted"
-        strokeWidth={strokeWidth * 0.5}
+        strokeWidth={strokeWidth * 0.3}
       />
       <circle
         cx={center}
@@ -57,7 +57,7 @@ export const VisualTimerDisplay: React.FC<VisualTimerDisplayProps> = ({
         r={radius * 0.8}
         fill="none"
         className="stroke-primary/60"
-        strokeWidth={strokeWidth * 0.5}
+        strokeWidth={strokeWidth * 0.3}
         strokeDasharray={circumference * 0.8}
         strokeDashoffset={strokeDashoffset * 0.8}
         strokeLinecap="round"

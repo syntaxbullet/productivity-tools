@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { ResizableBox } from 'react-resizable';
 import 'react-resizable/css/styles.css';
 
@@ -41,11 +41,34 @@ export function GenericWidget({
     attributes,
     listeners,
     setNodeRef,
+    transform,
     node,
     didRegister,
     translateX,
     translateY,
   } = useWidgetDrag(id);
+
+  const widgets = useWidgetStore((state) => state.widgets);
+  const updateWidgetStore = useWidgetStore((state) => state.updateWidget);
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (transform && !isDragging) {
+      // Drag started
+      setIsDragging(true);
+      // Find max zIndex among all widgets
+      const maxZIndex = Math.max(
+        ...Object.values(widgets).map((w) => w.zIndex || 0)
+      );
+      // Update this widget's zIndex to max + 1
+      updateWidgetStore(id, { zIndex: maxZIndex + 1 });
+    } else if (!transform && isDragging) {
+      // Drag ended
+      setIsDragging(false);
+      // zIndex persists, so no change needed here
+    }
+  }, [transform, isDragging, id, updateWidgetStore, widgets]);
 
   const { addWidget } = useWidgetStore();
   const widget: Widget | undefined = useWidgetStore((s) => s.widgets[id]);
@@ -92,8 +115,9 @@ export function GenericWidget({
       height: widget?.size?.height,
       touchAction: 'auto',
       position: 'absolute' as 'absolute',
+      zIndex: widget?.zIndex ?? 'auto',
     }),
-    [translateX, translateY, widget]
+    [translateX, translateY, widget, transform]
   );
 
   const handleWidgetRemove = () => {
