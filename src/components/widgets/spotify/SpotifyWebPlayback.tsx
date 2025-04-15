@@ -204,6 +204,22 @@ export const SpotifyWebPlayback: React.FC<{
     localStorage.setItem('spotify_player_muted', String(isMuted));
   }, [isMuted]);
 
+  // --- Smooth progress bar update ---
+  useEffect(() => {
+    if (!track || paused) return;
+    const interval = setInterval(() => {
+      setProgressMs((prev) => {
+        // Only increment if less than duration
+        if (prev + 200 < durationMs) {
+          return prev + 200;
+        } else {
+          return durationMs;
+        }
+      });
+    }, 200);
+    return () => clearInterval(interval);
+  }, [track, paused, durationMs]);
+
   // Controls
   const handlePlayPause = () => {
     if (!playerRef.current) return;
