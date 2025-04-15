@@ -47,7 +47,8 @@ const YouTubePlayerWidget: React.FC<YouTubePlayerWidgetProps> = ({
   const widget = useWidgetStore((state) => state.widgets[id]);
   const updateWidgetData = useWidgetStore((state) => state.updateWidgetData);
 
-  const videoIdRaw = widget?.data?.videoId ?? '';
+  const videoIdRaw =
+    widget?.data?.videoId ?? 'https://www.youtube.com/watch?v=4xDzrJKXOOY';
   const videoId = extractVideoId(videoIdRaw);
   const playlistId = extractPlaylistId(videoIdRaw);
 

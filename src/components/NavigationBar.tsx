@@ -5,30 +5,21 @@ import { Button } from './ui/button';
 import { useWidgetStore } from '@/stores/WidgetStore';
 import { WidgetType, getAllWidgetTypes } from '@/lib/WidgetRegistry';
 import React from 'react';
+import { FaSpotify, FaYoutube } from 'react-icons/fa';
 
 export function NavigationBar() {
   const { isDialogOpen, toggleDialog } = useThemeStore();
   const spawnWidget = useWidgetStore((state) => state.spawnWidget);
+  const widgets = useWidgetStore((state) => state.widgets);
+  const hasSpotifyWidget = Object.values(widgets).some(
+    (w) => w.type === 'spotify'
+  );
 
   const iconMap: Record<WidgetType, React.ReactNode> = {
     clock: <Clock className="w-5 h-5 mr-2" aria-hidden="true" />,
     pomodoro: <Timer className="w-5 h-5 mr-2" aria-hidden="true" />,
-    youtube: (
-      <svg
-        className="w-5 h-5 mr-2"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M10 15l5.19-3L10 9v6z" />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M21.8 7.2a3.01 3.01 0 00-2.12-2.12C17.6 4.5 12 4.5 12 4.5s-5.6 0-7.68.58a3.01 3.01 0 00-2.12 2.12A31.4 31.4 0 002 12a31.4 31.4 0 00.2 4.8 3.01 3.01 0 002.12 2.12c2.08.58 7.68.58 7.68.58s5.6 0 7.68-.58a3.01 3.01 0 002.12-2.12A31.4 31.4 0 0022 12a31.4 31.4 0 00-.2-4.8zM9.5 15.5v-7l6 3.5-6 3.5z"
-        />
-      </svg>
-    ),
+    youtube: <FaYoutube className="w-5 h-5 mr-2" aria-hidden="true" />,
+    spotify: <FaSpotify className="w-5 h-5 mr-2" aria-hidden="true" />,
   };
 
   return (
@@ -62,7 +53,7 @@ export function NavigationBar() {
                     const widget = useWidgetStore.getState().widgets[id];
                     if (widget) {
                       useWidgetStore.getState().updateWidgetData(id, {
-                        videoId: 'dQw4w9WgXcQ',
+                        videoId: 'jfKfPfyJRdk',
                       });
                     }
                   }, 100);
@@ -76,6 +67,10 @@ export function NavigationBar() {
               Add {type.charAt(0).toUpperCase() + type.slice(1)} Widget
             </Button>
           );
+        }
+        // Hide the Spotify button if the widget is already present
+        if (type === 'spotify' && hasSpotifyWidget) {
+          return null;
         }
         return (
           <Button
