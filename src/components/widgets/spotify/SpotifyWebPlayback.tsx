@@ -142,36 +142,6 @@ export const SpotifyWebPlayback: React.FC<{
     localStorage.setItem('spotify_player_muted', String(isMuted));
   }, [isMuted]);
 
-  useEffect(() => {
-    if (!deviceId || !token) return;
-    // Transfer playback to this device
-    fetch('https://api.spotify.com/v1/me/player', {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        device_ids: [deviceId],
-        play: true,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          console.error(
-            'Failed to transfer playback to Productivity Tools device.'
-          );
-        }
-      })
-      .catch(() => {
-        console.error(
-          'Network error while transferring playback to Productivity Tools device.'
-        );
-      });
-    // Only run once per deviceId/token
-    // eslint-disable-next-line
-  }, [deviceId, token]);
-
   // --- Smooth progress bar update ---
   useEffect(() => {
     if (!track || paused) return;
