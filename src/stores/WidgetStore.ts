@@ -99,14 +99,6 @@ export const useWidgetStore = create<WidgetStore>()(
             widgetDefaults.minHeight,
             overrides?.minHeight ?? widgetDefaults.minHeight
           );
-          const maxWidth = Math.min(
-            widgetDefaults.maxWidth,
-            overrides?.maxWidth ?? widgetDefaults.maxWidth
-          );
-          const maxHeight = Math.min(
-            widgetDefaults.maxHeight,
-            overrides?.maxHeight ?? widgetDefaults.maxHeight
-          );
           const newWidget: Widget = {
             id,
             type,
