@@ -80,8 +80,6 @@ export const SpotifyWebPlayback: React.FC<{
   const [durationMs, setDurationMs] = useState(0);
   const [volume, setVolume] = useState(0.5);
   const [isMuted, setIsMuted] = useState(false);
-  const [] = useState<Track | null>(null);
-  const [] = useState<Track | null>(null);
 
   // Track last played URI to avoid duplicate play requests
 
