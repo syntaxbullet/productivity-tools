@@ -3,8 +3,9 @@ import { ClockWidget } from '@/components/widgets/clock/ClockWidget';
 import { PomodoroWidget } from '@/components/widgets/pomodoro/PomodoroWidget';
 import YouTubePlayerWidget from '@/components/widgets/youtube/YouTubePlayerWidget';
 import { SpotifyPlayerWidget } from '@/components/widgets/spotify/SpotifyPlayerWidget';
+import { TodoWidget } from '@/components/widgets/todo/TodoWidget';
 
-export type WidgetType = 'clock' | 'pomodoro' | 'youtube' | 'spotify';
+export type WidgetType = 'clock' | 'pomodoro' | 'youtube' | 'spotify' | 'todo';
 
 export interface WidgetDefaults {
   type: WidgetType;
@@ -56,6 +57,16 @@ const widgetRegistry: Record<WidgetType, WidgetDefaults> = {
       minHeight: 380,
       maxWidth: 1440,
       maxHeight: 810,
+    },
+  },
+  todo: {
+    type: 'todo',
+    component: TodoWidget,
+    defaultProps: {
+      minWidth: 280,
+      minHeight: 200,
+      maxWidth: 800,
+      maxHeight: 600,
     },
   },
 };

@@ -72,8 +72,9 @@ export const SpotifyWebPlayback: React.FC<{
   uris: string[];
 }> = ({ token }) => {
   const playerRef = useRef<any>(null);
-  const [, setDeviceId] = useState<string | null>(null);
-  const [, setError] = useState<string | null>(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [initializing, setInitializing] = useState(true);
   const [paused, setPaused] = useState(true);
   const [track, setTrack] = useState<Track | null>(null);
   const [progressMs, setProgressMs] = useState(0);
@@ -90,8 +91,16 @@ export const SpotifyWebPlayback: React.FC<{
       playerRef.current = getOrCreateSpotifyPlayer(
         token,
         volume,
-        setDeviceId,
-        setError,
+        (id: string) => {
+          setDeviceId(id);
+          setInitializing(false);
+          console.log('Spotify device ready:', id);
+        },
+        (msg: string) => {
+          setError(msg);
+          setInitializing(false);
+          console.error('Spotify initialization error:', msg);
+        },
         setPaused,
         setProgressMs,
         setDurationMs,
@@ -181,6 +190,32 @@ export const SpotifyWebPlayback: React.FC<{
 
   return (
     <div className="flex flex-col items-center gap-3 p-4 w-full max-w-xs mx-auto text-card-foreground">
+      {/* Device status indicator */}
+      {initializing && (
+        <span className="text-yellow-500 text-xs mb-2">
+          Initializing Spotify device…
+        </span>
+      )}
+      {deviceId && !error && !initializing && (
+        <span className="text-green-600 text-xs mb-2">
+          Device ready: {deviceId}
+        </span>
+      )}
+      {error && (
+        <span className="text-red-500 text-xs mb-2">Error: {error}</span>
+      )}
+      {!track && !initializing && !error && (
+        <div className="text-center text-yellow-600 dark:text-yellow-400 text-xs mt-2">
+          No active playback device found.
+          <br />
+          <span className="text-muted-foreground">
+            Open Spotify and select "Productivity Tools" as the active device.
+            <br />
+            <b>Tip:</b> Click Play to activate the Spotify device if it doesn't
+            appear.
+          </span>
+        </div>
+      )}
       {track && (
         <div className="flex flex-col items-center w-full">
           <img
@@ -195,15 +230,6 @@ export const SpotifyWebPlayback: React.FC<{
           <div className="text-xs text-muted-foreground text-center">
             {track.artists.map((a) => a.name).join(', ')}
           </div>
-        </div>
-      )}
-      {!track && (
-        <div className="text-center text-yellow-600 dark:text-yellow-400 text-xs mt-2">
-          No active playback device found.
-          <br />
-          <span className="text-muted-foreground">
-            Open Spotify and select "Productivity Tools" as the active device.
-          </span>
         </div>
       )}
       <SpotifyPlayerProgress

@@ -132,3 +132,36 @@
   cursor: se-resize;
   background: transparent;
 }
+
+/* Custom scrollbar for theme consistency */
+/* Light mode */
+.todo-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--muted);
+}
+.todo-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  background: var(--muted);
+  border-radius: 8px;
+}
+.todo-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 8px;
+}
+.todo-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Dark mode */
+.dark .todo-scrollbar {
+  scrollbar-color: var(--muted-foreground) var(--muted);
+}
+.dark .todo-scrollbar::-webkit-scrollbar {
+  background: var(--muted);
+}
+.dark .todo-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+}
+.dark .todo-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

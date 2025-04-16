@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { useWidgetStore } from '@/stores/WidgetStore';
 import { WidgetType, getAllWidgetTypes } from '@/lib/WidgetRegistry';
 import React from 'react';
-import { FaSpotify, FaYoutube } from 'react-icons/fa';
+import { FaSpotify, FaYoutube, FaList } from 'react-icons/fa';
 
 export function NavigationBar() {
   const { isDialogOpen, toggleDialog } = useThemeStore();
@@ -20,6 +20,7 @@ export function NavigationBar() {
     pomodoro: <Timer className="w-5 h-5 mr-2" aria-hidden="true" />,
     youtube: <FaYoutube className="w-5 h-5 mr-2" aria-hidden="true" />,
     spotify: <FaSpotify className="w-5 h-5 mr-2" aria-hidden="true" />,
+    todo: <FaList className="w-5 h-5 mr-2" aria-hidden="true" />,
   };
 
   return (
