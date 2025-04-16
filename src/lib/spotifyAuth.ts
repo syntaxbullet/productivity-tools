@@ -1,6 +1,7 @@
-// src/lib/spotifyAuth.ts
 const SPOTIFY_CLIENT_ID = '890450f3a16940698081dfffbd57c973'; // TODO: Replace with your client ID
-const REDIRECT_URI = 'http://127.0.0.1:5173/spotify/callback'; // Change if needed
+const REDIRECT_URI = import.meta.env.PROD
+  ? 'https://syntaxbullet-productivity-tools.netlify.app/spotify/callback'
+  : 'http://127.0.0.1:5173/spotify/callback'; // Change if needed
 const SCOPES = [
   'streaming',
   'user-read-email',
