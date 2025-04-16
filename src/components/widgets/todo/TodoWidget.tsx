@@ -6,31 +6,32 @@ import { GenericWidget } from '../GenericWidget';
 
 export const TodoWidget: React.FC<{ id: string }> = ({ id }) => {
   const data = useWidgetStore((state) => state.widgets[id]?.data);
-  const updateWidget = useWidgetStore((state) => state.updateWidget);
-  const setWidgetData = React.useCallback(
-    (data: any) => updateWidget(id, { data }),
-    [updateWidget, id]
-  );
+  const updateWidgetData = useWidgetStore((state) => state.updateWidgetData);
 
-  const safeData = Array.isArray(data) ? data : [];
+  // Only use data.todos as the source of truth for todos
+  const safeTodos = Array.isArray(data?.todos) ? data.todos : [];
 
   const handleAdd = (text: string) => {
-    setWidgetData([
-      ...safeData,
-      { id: Date.now().toString(), text, completed: false },
-    ]);
+    updateWidgetData(id, {
+      todos: [
+        ...safeTodos,
+        { id: Date.now().toString(), text, completed: false },
+      ],
+    });
   };
 
   const handleToggle = (todoId: string) => {
-    setWidgetData(
-      safeData.map((todo: any) =>
+    updateWidgetData(id, {
+      todos: safeTodos.map((todo: any) =>
         todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+      ),
+    });
   };
 
   const handleRemove = (todoId: string) => {
-    setWidgetData(safeData.filter((todo: any) => todo.id !== todoId));
+    updateWidgetData(id, {
+      todos: safeTodos.filter((todo: any) => todo.id !== todoId),
+    });
   };
 
   return (
@@ -40,7 +41,7 @@ export const TodoWidget: React.FC<{ id: string }> = ({ id }) => {
           <div className="flex flex-col gap-4 flex-1 h-full">
             <TodoInput onAdd={handleAdd} />
             <TodoList
-              todos={safeData}
+              todos={safeTodos}
               onToggle={handleToggle}
               onRemove={handleRemove}
             />

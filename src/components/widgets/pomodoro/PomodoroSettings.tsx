@@ -34,7 +34,7 @@ export function PomodoroSettings({
 }: PomodoroSettingsProps) {
   return (
     <WidgetSettingsPopover popoverContentClassName="w-80">
-      <WidgetSettingsContent>
+      <WidgetSettingsContent className="z-[9999]">
         <div className="flex flex-col space-y-1">
           <label htmlFor="pomodoroDuration" className="font-semibold leading-6">
             Focus Duration (minutes)

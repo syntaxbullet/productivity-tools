@@ -116,11 +116,13 @@ export function GenericWidget({
       top: widget?.position?.y ?? 0,
       width: widget?.size?.width,
       height: widget?.size?.height,
+      minWidth: minWidth ?? undefined,
+      minHeight: minHeight ?? undefined,
       touchAction: 'auto',
       position: 'absolute' as 'absolute',
       zIndex: widget?.zIndex ?? 'auto',
     }),
-    [translateX, translateY, widget, transform, isDragging]
+    [translateX, translateY, widget, transform, isDragging, minWidth, minHeight]
   );
 
   const handleWidgetRemove = () => {
@@ -200,6 +202,10 @@ export function GenericWidget({
                 ? [maxWidth, maxHeight]
                 : undefined
             }
+            style={{
+              minWidth: minWidth ?? undefined,
+              minHeight: minHeight ?? undefined,
+            }}
             handle={widget.data.isPinned ? <div></div> : <CustomResizeHandle />}
             onResize={(_e, data) => {
               updateWidget(id, { size: data.size });
