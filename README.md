@@ -36,12 +36,43 @@ We welcome contributions! Here’s how you can help:
    - Store widget state in the `WidgetStore` (`src/stores/WidgetStore.ts`).
 
 2. **Register your widget**  
-   - Add it to the `WidgetRegistry` (`src/lib/WidgetRegistry.tsx`).
+   - Open `src/lib/WidgetRegistry.tsx`.
+   - Import your widget at the top, for example:
+     ```tsx
+     import { MyWidget } from '@/components/widgets/mywidget/MyWidget';
+     ```
+   - Add an entry to the `widgetRegistry` object:
+     ```tsx
+     const widgetRegistry = {
+       ...
+       mywidget: {
+         component: MyWidget,
+         defaultProps: {
+           minWidth: 200,
+           minHeight: 200,
+           maxWidth: 600,
+           maxHeight: 600,
+         },
+       },
+     };
+     ```
+   - Update the `WidgetType` type to include your widget's key:
+     ```tsx
+     export type WidgetType = 'clock' | 'pomodoro' | 'youtube' | 'todo' | 'mywidget';
+     ```
+   - This ensures your widget is recognized by the system and can be spawned by users.
 
 3. **Split into reusable components**  
    - Keep code modular to help others reuse your work.
 
-4. **Follow best practices**  
+4. **Verify defaults and types**  
+   - Make sure your widget's default properties are set in the registry.
+   - If your widget uses custom data, extend the widget data type accordingly.
+
+5. **Test**  
+   - Run the app locally and confirm your widget appears and works as expected.
+
+6. **Follow best practices**  
    - Use TypeScript, Tailwind CSS, and Shadcn UI components.
    - Maintain accessibility and responsive design.
 
