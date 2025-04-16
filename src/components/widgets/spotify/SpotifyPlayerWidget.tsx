@@ -1,7 +1,6 @@
 import React from 'react';
 import { GenericWidget } from '../GenericWidget';
 import { useWidgetStore } from '../../../stores/WidgetStore';
-import { SpotifyEmbed } from './SpotifyEmbed';
 import { SpotifyLoginButton } from './SpotifyLoginButton';
 import { SpotifyWebPlayback } from './SpotifyWebPlayback';
 import { Button } from '@/components/ui/button';
@@ -64,9 +63,6 @@ export const SpotifyPlayerWidget: React.FC<{
           {!accessToken && <SpotifyLoginButton />}
           {accessToken && spotifyUri && (
             <SpotifyWebPlayback token={accessToken} uris={[spotifyUri]} />
-          )}
-          {!accessToken && widgetData.spotifyUrl && (
-            <SpotifyEmbed url={widgetData.spotifyUrl} />
           )}
         </div>
       </div>
