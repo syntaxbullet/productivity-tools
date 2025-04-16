@@ -70,9 +70,9 @@ function getOrCreateSpotifyPlayer(
 export const SpotifyWebPlayback: React.FC<{
   token: string;
   uris: string[];
-}> = ({ token, uris }) => {
+}> = ({ token }) => {
   const playerRef = useRef<any>(null);
-  const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [, setDeviceId] = useState<string | null>(null);
   const [, setError] = useState<string | null>(null);
   const [paused, setPaused] = useState(true);
   const [track, setTrack] = useState<Track | null>(null);
@@ -84,50 +84,8 @@ export const SpotifyWebPlayback: React.FC<{
   const [] = useState<Track | null>(null);
 
   // Track last played URI to avoid duplicate play requests
-  const lastPlayedUriRef = useRef<string | null>(null);
 
   // Fetch current track info
-  const fetchCurrentTrack = async () => {
-    try {
-      const res = await fetch(
-        'https://api.spotify.com/v1/me/player/currently-playing',
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (!res.ok) {
-        setTrack(null);
-        setPaused(true);
-        setProgressMs(0);
-        setDurationMs(0);
-        if (res.status === 404) {
-          setError(
-            'No active device found. Please open Spotify and select "Productivity Tools" as the device.'
-          );
-        } else {
-          setError(`Spotify error: ${res.status} ${res.statusText}`);
-        }
-        return;
-      }
-      // Only parse JSON if content-length is not 0
-      const text = await res.text();
-      if (!text) {
-        setTrack(null);
-        setPaused(true);
-        setProgressMs(0);
-        setDurationMs(0);
-        return;
-      }
-      const data = JSON.parse(text);
-      setTrack(data.item);
-      setPaused(data.is_playing === false);
-      setProgressMs(data.progress_ms || 0);
-      setDurationMs(data.item?.duration_ms || 0);
-      setError(null);
-    } catch (e: any) {
-      setError('Network or Spotify API error: ' + (e?.message || e));
-    }
-  };
 
   useEffect(() => {
     function createPlayer() {
@@ -161,33 +119,6 @@ export const SpotifyWebPlayback: React.FC<{
     };
     // eslint-disable-next-line
   }, [token]);
-
-  useEffect(() => {
-    // Only send play request if deviceId is ready and URI has changed
-    const currentUri = uris.length > 0 ? uris[0] : null;
-    if (deviceId && currentUri && lastPlayedUriRef.current !== currentUri) {
-      fetch('https://api.spotify.com/v1/me/player/play', {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ uris, device_id: deviceId }),
-      })
-        .then((res) => {
-          if (!res.ok) {
-            setError(
-              `Failed to start playback: ${res.status} ${res.statusText}`
-            );
-          } else {
-            setError(null);
-          }
-          setTimeout(fetchCurrentTrack, 1000);
-        })
-        .catch((e) => {
-          setError('Playback network error: ' + (e?.message || e));
-        });
-      lastPlayedUriRef.current = currentUri;
-    }
-    // eslint-disable-next-line
-  }, [deviceId, uris, token]);
 
   useEffect(() => {
     const savedVolume = localStorage.getItem('spotify_player_volume');
