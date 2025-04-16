@@ -142,6 +142,22 @@ export const SpotifyWebPlayback: React.FC<{
     localStorage.setItem('spotify_player_muted', String(isMuted));
   }, [isMuted]);
 
+  // Fetch and log Spotify user product type
+  useEffect(() => {
+    async function fetchUserProduct() {
+      try {
+        const res = await fetch('https://api.spotify.com/v1/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const user = await res.json();
+        console.log('Spotify user.product:', user.product); // Should be 'premium' for playback
+      } catch (e) {
+        console.error('Error fetching Spotify user profile', e);
+      }
+    }
+    fetchUserProduct();
+  }, [token]);
+
   // --- Smooth progress bar update ---
   useEffect(() => {
     if (!track || paused) return;
